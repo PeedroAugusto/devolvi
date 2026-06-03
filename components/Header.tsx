@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowLeft, Plus } from "lucide-react";
+import { Logo } from "./Logo";
 
 interface HeaderProps {
-  title: string;
   subtitle: string;
   showBack?: boolean;
   onBack?: () => void;
@@ -11,7 +11,6 @@ interface HeaderProps {
 }
 
 export function Header({
-  title,
   subtitle,
   showBack,
   onBack,
@@ -26,7 +25,7 @@ export function Header({
             Meus empréstimos
           </button>
         ) : null}
-        <h1 className="page-title">{title}</h1>
+        <Logo />
         <p className="page-subtitle">{subtitle}</p>
       </div>
       {onNewLoan ? (

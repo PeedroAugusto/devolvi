@@ -51,6 +51,7 @@ export function Dashboard() {
   const [confirmPaymentDelete, setConfirmPaymentDelete] = useState<Payment | null>(
     null,
   );
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   const sortedLoans = useMemo(
     () =>
@@ -85,6 +86,18 @@ export function Dashboard() {
     setPaymentModalOpen(true);
   };
 
+  const handleDownloadPdf = async () => {
+    if (!activeLoan || !activeLoanMetrics || downloadingPdf) return;
+
+    setDownloadingPdf(true);
+    try {
+      const { downloadLoanPdf } = await import("@/lib/pdf/downloadLoanPdf");
+      await downloadLoanPdf(activeLoan, activeLoanMetrics, activeLoanPayments);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
   if (!ready) {
     return (
       <main className="page">
@@ -105,6 +118,8 @@ export function Dashboard() {
               startDateLabel={formatShortDate(activeLoan.startDate)}
               onBack={backToList}
               onEdit={openEditLoan}
+              onDownload={handleDownloadPdf}
+              downloading={downloadingPdf}
             />
 
             <LoanSummaryCard
@@ -133,7 +148,6 @@ export function Dashboard() {
         ) : (
           <>
             <Header
-              title="Devolvi"
               subtitle={
                 loans.length > 0
                   ? "Selecione um empréstimo ou crie um novo."
