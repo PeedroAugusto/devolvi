@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Plus } from "lucide-react";
 import { useApp } from "@/context/AppProvider";
 import {
   formatCurrency,
@@ -9,7 +10,9 @@ import {
 } from "@/lib/format";
 import type { Loan, Payment } from "@/lib/types";
 import { Header } from "./Header";
-import { LoanInfoCard, PaymentsTable } from "./PaymentsTable";
+import { DetailHeader } from "./DetailHeader";
+import { PaymentsTable } from "./PaymentsTable";
+import { LoanDetailsSection } from "./LoanDetailsSection";
 import { LoanListView } from "./LoanListView";
 import { LoanModal } from "./LoanModal";
 import { LoanSummaryCard } from "./LoanSummaryCard";
@@ -93,43 +96,33 @@ export function Dashboard() {
   const showDetail = view === "detail" && !!activeLoan && !!activeLoanMetrics;
 
   return (
-    <main className="page">
-      <div className="page-container">
-        <Header
-          subtitle={
-            showDetail
-              ? "Aqui está o resumo do seu empréstimo."
-              : loans.length > 0
-                ? "Selecione um empréstimo ou crie um novo."
-                : "Organize seus empréstimos e devoluções em um só lugar."
-          }
-          showBack={showDetail}
-          onBack={backToList}
-          onNewLoan={openCreateLoan}
-        />
-
-        {showDetail ? (
+    <main className={`page${showDetail ? " page-detail" : ""}`}>
+      <div className={`page-container${showDetail ? " page-container-detail" : ""}`}>
+        {showDetail && activeLoan ? (
           <>
-            <LoanSummaryCard
+            <DetailHeader
               creditor={activeLoan.creditor}
               startDateLabel={formatShortDate(activeLoan.startDate)}
+              onBack={backToList}
+              onEdit={openEditLoan}
+            />
+
+            <LoanSummaryCard
               totalBorrowed={formatCurrency(activeLoanMetrics.totalBorrowed)}
               totalReturned={formatCurrency(activeLoanMetrics.totalReturned)}
               balance={formatCurrency(activeLoanMetrics.balance)}
               progressPercent={activeLoanMetrics.progressPercent}
               isFullyPaid={activeLoanMetrics.isFullyPaid}
-              onEdit={openEditLoan}
             />
 
             <PaymentsTable
               payments={activeLoanPayments}
-              onAdd={openCreatePayment}
               onEdit={openEditPayment}
               onDelete={(payment) => setConfirmPaymentDelete(payment)}
               onToggleStatus={(payment) => togglePaymentStatus(payment.id)}
             />
 
-            <LoanInfoCard
+            <LoanDetailsSection
               creditor={activeLoan.creditor}
               startDate={formatTableDate(activeLoan.startDate)}
               totalBorrowed={formatCurrency(activeLoan.totalAmount)}
@@ -138,15 +131,40 @@ export function Dashboard() {
             />
           </>
         ) : (
-          <LoanListView
-            loans={sortedLoans}
-            getProgress={(loanId) => getLoanMetrics(loanId).progressPercent}
-            getBalance={(loanId) => getLoanMetrics(loanId).balance}
-            onSelect={selectLoan}
-            onNewLoan={openCreateLoan}
-          />
+          <>
+            <Header
+              title="Devolvi"
+              subtitle={
+                loans.length > 0
+                  ? "Selecione um empréstimo ou crie um novo."
+                  : "Organize seus empréstimos e devoluções em um só lugar."
+              }
+              onNewLoan={openCreateLoan}
+            />
+
+            <LoanListView
+              loans={sortedLoans}
+              getProgress={(loanId) => getLoanMetrics(loanId).progressPercent}
+              getBalance={(loanId) => getLoanMetrics(loanId).balance}
+              onSelect={selectLoan}
+              onNewLoan={openCreateLoan}
+            />
+          </>
         )}
       </div>
+
+      {showDetail ? (
+        <div className="sticky-footer">
+          <button
+            type="button"
+            className="btn-primary btn-sticky"
+            onClick={openCreatePayment}
+          >
+            <Plus size={18} strokeWidth={2.25} />
+            Registrar pagamento
+          </button>
+        </div>
+      ) : null}
 
       <LoanModal
         open={loanModalOpen}

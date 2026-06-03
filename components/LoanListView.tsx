@@ -60,21 +60,21 @@ export function LoanListView({
                   <h3 className="truncate loan-title">
                     Empréstimo com {loan.creditor}
                   </h3>
-                  <ChevronRight size={16} className="shrink-0 text-[#8b95a5]" strokeWidth={2} />
+                  <ChevronRight size={16} className="shrink-0 text-muted" strokeWidth={2} />
                 </div>
                 <p className="text-caption mt-0.5">
                   Iniciado em {formatShortDate(loan.startDate)}
                 </p>
                 <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px]">
-                  <span className="text-[#5f6b7a]">
+                  <span className="text-secondary">
                     Emprestado{" "}
-                    <strong className="font-semibold text-[#16a34a]">
+                    <strong className="font-semibold text-primary">
                       {formatCurrency(loan.totalAmount)}
                     </strong>
                   </span>
-                  <span className="text-[#5f6b7a]">
+                  <span className="text-secondary">
                     Saldo{" "}
-                    <strong className="font-semibold text-[#0f1419]">
+                    <strong className="font-semibold text-main">
                       {formatCurrency(balance)}
                     </strong>
                   </span>

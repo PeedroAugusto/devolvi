@@ -15,6 +15,12 @@ const tableDateFormatter = new Intl.DateTimeFormat("pt-BR", {
   year: "numeric",
 });
 
+const feedDateFormatter = new Intl.DateTimeFormat("pt-BR", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+
 export function formatCurrency(value: number): string {
   return currencyFormatter.format(value);
 }
@@ -27,6 +33,16 @@ export function formatShortDate(isoDate: string): string {
 export function formatTableDate(isoDate: string): string {
   const date = parseISODate(isoDate);
   return tableDateFormatter.format(date);
+}
+
+export function formatFeedDate(isoDate: string): string {
+  const date = parseISODate(isoDate);
+  const parts = feedDateFormatter.formatToParts(date);
+  const day = parts.find((p) => p.type === "day")?.value ?? "";
+  const monthRaw = parts.find((p) => p.type === "month")?.value?.replace(".", "") ?? "";
+  const month = monthRaw.charAt(0).toUpperCase() + monthRaw.slice(1);
+  const year = parts.find((p) => p.type === "year")?.value ?? "";
+  return `${day} ${month} ${year}`;
 }
 
 export function formatInputDate(isoDate: string): string {

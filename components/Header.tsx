@@ -3,33 +3,43 @@
 import { ArrowLeft, Plus } from "lucide-react";
 
 interface HeaderProps {
+  title: string;
   subtitle: string;
   showBack?: boolean;
   onBack?: () => void;
-  onNewLoan: () => void;
+  onNewLoan?: () => void;
 }
 
-export function Header({ subtitle, showBack, onBack, onNewLoan }: HeaderProps) {
+export function Header({
+  title,
+  subtitle,
+  showBack,
+  onBack,
+  onNewLoan,
+}: HeaderProps) {
   return (
     <header className="page-header">
-      <div>
+      <div className="page-header-text">
         {showBack && onBack ? (
           <button type="button" className="back-link" onClick={onBack}>
-            <ArrowLeft size={14} strokeWidth={2} />
+            <ArrowLeft size={15} strokeWidth={2} />
             Meus empréstimos
           </button>
         ) : null}
-        <h1 className="page-title">Olá! 👋</h1>
+        <h1 className="page-title">{title}</h1>
         <p className="page-subtitle">{subtitle}</p>
       </div>
-      <button
-        type="button"
-        className="btn-primary self-start-sm-auto"
-        onClick={onNewLoan}
-      >
-        <Plus size={15} strokeWidth={2.25} />
-        Novo empréstimo
-      </button>
+      {onNewLoan ? (
+        <button
+          type="button"
+          className="btn-primary page-header-action"
+          onClick={onNewLoan}
+        >
+          <Plus size={15} strokeWidth={2.25} />
+          <span className="btn-label-full">Novo empréstimo</span>
+          <span className="btn-label-short">Novo</span>
+        </button>
+      ) : null}
     </header>
   );
 }
